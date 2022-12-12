@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../styles/reset.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        .img-box img{ width: 200px; }
+    </style>
+    <script src="../script/default.js"></script>
+</head>
+<!-- 
+   1. 물건 몇개 살까? #productCount1
+   2. 물건 개수가 정해지면 화면에 가격을 계산 
+   3. 0개를 살 수 없으니 error 표시
+     1 로 변경 => 기본값으로 셋팅하려고 data-value="12500"
+ -->
+<body>
+    <div class="addCart-container">
+        <input type="text" value="0"> 개
+        <a href="./test03.html">장바구니로 가기</a>
+    </div>
+    <div class="items-container">
+        <div class="item-box">
+            <div class="img-box">
+                <img src="./images/img_maxim1.png" alt="">
+            </div>
+            <div class="item-content">
+                <h3>맥심 모카골드 마일드</h3>
+                <div class="box">
+                    <div class="item-price" data-value="12500">
+                        12500
+                    </div>
+                    <input type="number" value="1" min="1" max="10" id="productCount1">
+                </div>
+                <div class="button-box">
+                    <i class='bx bxs-cart'></i>
+                    <span>장바구니</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+         const productCount1 = document.querySelector('#productCount1');
+         log( productCount1 );
+
+         const priceHap = (price, count)=>{
+            return parseInt(price) * parseInt(count); 
+         }
+
+        
+         productCount1.addEventListener('click', ()=>{
+            log( productCount1.value );
+            let price = document.querySelector('.item-price').getAttribute('data-value');  
+            let count = document.querySelector('#productCount1').value; 
+             
+            if( !(count >0 && count <= 10) ){
+                alert('상품은 1개이상 10개이하 선택할 수 있습니다.');
+                document.querySelector('.item-price').innerHTML = price; 
+                document.querySelector('#productCount1').value = 1; 
+            }else{
+                document.querySelector('.item-price').innerHTML = priceHap(price, count);
+            }
+         })
+         productCount1.addEventListener('keyup', ()=>{
+            log( productCount1.value );
+            let price = document.querySelector('.item-price').getAttribute('data-value');  // 가격
+            let count = document.querySelector('#productCount1').value; // 개수, get
+
+            if( !(count >0 && count <= 10) ){
+                alert('상품은 1개이상 10개이하 선택할 수 있습니다.');
+
+                document.querySelector('.item-price').innerHTML = price; 
+                productCount1.value = 1; // set
+            }else{
+                document.querySelector('.item-price').innerHTML = priceHap(price, count);
+                // 가격, 개수
+            }
+            ///
+         })
+
+         let  addCartCount = 0; 
+         const  itemAry = []; // [{},{},{},{}....]
+         //const item = {}; // const 
+         const buttonBox = document.querySelector('.button-box');
+         buttonBox.addEventListener('click', ()=>{
+            let id = parseInt(Math.random() * 10000); // 숫자
+            id = `${id}`.padStart( 4, '0' ); // 문자열로 변경한 후 자리 보정 
+            // String  : '23'.padStart( 4 , '0' )  => 2300
+            // String  : '23'.padEnd( 4 , '0' )  => 0023 
+            // 2번째 파라미터를 생략하면 공백이 채워짐
+
+             
+            let name  = document.querySelector('h3').innerHTML;
+            let count = document.querySelector('#productCount1').value;
+            let price = priceHap( count, document.querySelector('.item-price').getAttribute('data-value'));
+
+            // const item = {}
+            // item.id = id; //  { id : id }
+            // item.name = name; // { id : id, name : name  }  
+            // item.count = count; // { id : id, name : name , count:count }
+
+            // const item = {
+            //     id : id, 
+            //     name: name, 
+            //     count : count
+            // }
+
+            const item = { // 속성값과  value 변수가 같으면 생략 할 수 있다. 
+                id , 
+                name, 
+                count, 
+                price
+            }
+            
+            itemAry.push(item);
+            localStorage.setItem('myStore', JSON.stringify(itemAry) );
+            // 문자열로 변형 해서 저장 하도록 함 
+            // 키값은 사용자가 알아서 만듬 
+            console.log( itemAry );
+
+            document.querySelector('.addCart-container>input').value = ++addCartCount; 
+         })
+    </script>
+    <script>
+        // 페이지가 읽어진 후에 초기화 할일 들을 정의 
+        document.addEventListener('DOMContentLoaded', ()=>{
+            const myStore = JSON.parse(localStorage.getItem('myStore'));
+            document.querySelector('.addCart-container>input').value = myStore.length; 
+        })
+
+
+    </script>
+    <!-- 
+        장바구니에 담길 내용 
+        1. 선택, 이름, 개수, 가격, 삭제 : 보여주기 
+        2. {id, 이름, 개수, 가격} : 값을 구분하기 위한 유일키
+        3. localStorage 저장 .setItem, .getItem, .removeItem
+          // sessionStorage 저장 .setItem, .getItem, .removeItem
+          // 장바구니를 구현 못해서 
+     -->
+</body>
+</html>

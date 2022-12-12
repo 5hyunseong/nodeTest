@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장바구니</title>
+    <style>
+        .cart-box{ display: flex;}
+        .item-count{ width: 50px; text-align: center;}
+    </style>
+</head>
+<body>
+    <div class="addCart-container">
+        <input type="text">
+        <input type="checkbox" id="allCheck">
+        <label for="allCheck">모두선택</label>
+
+        <button class="selectedDelBtn">선택 삭제 </button>
+    </div>
+
+    <div class="cart-container">
+        <!-- 
+        <div class="cart-box">
+            <input type="checkbox" id='item-check'>
+            <div class="item-name"></div>
+            <div class="item-count"></div>
+            <div class="item-price"> </div>
+            <button class="item-delete">X</button>
+        </div> 
+        -->
+    </div>
+    <script>
+         
+        document.addEventListener('DOMContentLoaded', ()=>{
+            const myStore = JSON.parse(localStorage.getItem('myStore'));
+            // 문자열로 저장했기 때문에 문자열로 가져옴
+           // JSON.parse() : 원래 저장했던 형태로 변경
+            document.querySelector('.addCart-container>input').value = myStore.length;            
+        })
+
+        const myStore = JSON.parse(localStorage.getItem('myStore'));
+        // 삭제 버튼을 클릭하면 같은 배열 위치에 있는 id 값을 가져와서 
+        // myStore 배열에서 비교해서 지우기  delete 
+        // localStorage에 다시 저장 
+
+        // javascript 배열 : 하이오더 펑션 
+        // map, reduce, filter, find ... 
+        // localStorage에 다시 저장 
+
+        myStore.forEach(( item, index )=>{
+            const cartBox = document.createElement('div');
+            cartBox.classList.add('cart-box');
+            
+            const itemCheck = document.createElement('input');
+            itemCheck.checked = false; 
+            itemCheck.setAttribute('type', 'checkbox'); 
+            itemCheck.setAttribute('id', 'item-check'); 
+            cartBox.append(itemCheck);
+
+            const itemName = document.createElement('div');
+            itemName.classList.add('item-name');
+            itemName.innerHTML = item.name;
+            cartBox.append( itemName );
+            
+            const itemCount = document.createElement('div');
+            itemCount.classList.add('item-count');
+            itemCount.innerHTML = item.count;
+            cartBox.append( itemCount );
+
+            const itemPrice = document.createElement('div');
+            itemPrice.classList.add('item-price');
+            itemPrice.innerHTML = item.price;
+            cartBox.append( itemPrice );
+
+            const itemDel = document.createElement('button');
+            itemDel.classList.add('item-delete');
+            itemDel.innerHTML = 'X';
+            cartBox.append( itemDel );
+
+            document.querySelector('.cart-container').append( cartBox );
+        })
+
+        const itemDelBtns = document.querySelectorAll('.item-delete');
+        itemDelBtns.forEach((delBtn)=>{
+            delBtn.addEventListener('click', (event)=>{
+                console.log(event.target.parentElement)
+
+                event.target.parentElement.remove();
+                // id                
+            })
+        })
+
+        document.querySelector('#allCheck').addEventListener('click', (event)=>{
+            const all = document.querySelectorAll('#item-check');
+
+            if( event.target.checked  )
+                for( a of all){
+                    a.checked = true; 
+                }
+            else
+                for( a of all){
+                    a.checked = false; 
+                }
+        })
+
+
+        document.querySelector('.selectedDelBtn').addEventListener('click', ()=>{
+            const all = document.querySelectorAll('#item-check');
+            for( a of all){
+                if( a.checked ){ 
+                    a.parentElement.remove();
+                } 
+            }
+        })
+    </script>
+</body>
+</html>
